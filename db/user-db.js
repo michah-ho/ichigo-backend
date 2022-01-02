@@ -18,7 +18,7 @@ async function getAllUserData() {
 
 async function writeUserData(inputData, outputData) {
   try {
-    const result = await fs.writeFile(
+    await fs.writeFile(
       "./db/users.json",
       JSON.stringify(inputData),
       "utf8",

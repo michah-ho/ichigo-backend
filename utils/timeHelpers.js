@@ -1,5 +1,5 @@
 function setToMidnight(date) {
-  return new Date(date).setHours(0,0,0,0);
+  return new Date(new Date(date).setHours(0,0,0,0)).toISOString();
 }
 
 function getFirstDayOfTheWeek(date) {
