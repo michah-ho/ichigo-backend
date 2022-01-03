@@ -1,7 +1,7 @@
 const STATUSCODES = {
-  'Ok' : 200,
-  'Bad Request' : 400,
-  'Internal Server Error': 500,
+  'OK' : 200,
+  'BAD_REQUEST' : 400,
+  'INTERNAL_SERVER_ERROR': 500,
 }
 
 module.exports = {

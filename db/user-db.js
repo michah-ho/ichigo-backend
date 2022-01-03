@@ -2,12 +2,7 @@ const fs = require("fs").promises;
 
 async function getAllUserData() {
   try {
-    const result = await fs.readFile("./db/users.json", "utf8", (err, data) => {
-      if (err) {
-        return err;
-      }
-      return data;
-    });
+    const result = await fs.readFile("./db/users.json", "utf8");
     return JSON.parse(result);
   } catch (err) {
     throw {
