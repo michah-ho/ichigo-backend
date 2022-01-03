@@ -5,7 +5,7 @@ app.get('/', (req, res) => {
   res.send("Welcome to the Ichigo BackEnd!!!");
 });
 
-const userRouter = require('./routes/users');
+const { userRouter } = require('./routes/users');
 
 app.use('/users', userRouter);
 

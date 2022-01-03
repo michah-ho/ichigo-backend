@@ -12,9 +12,8 @@ const {
 } = require("../service/userService.js");
 const { STATUSCODES } = require("../config/constants");
 
-router.get("/:id/rewards", async (req, res) => {
+const getRewardsRoute = async (req, res) => {
   const atTime = req.query.at;
-
   if (!isDate(atTime)) {
     return res.status(STATUSCODES['BAD_REQUEST']).send({
       error: { message: "Please use a proper date for the at query param" },
@@ -30,7 +29,6 @@ router.get("/:id/rewards", async (req, res) => {
   const rewardsFromUser = userData
     ? getRewardsFromUser(userData, atTime)
     : null;
-
   if (userData === null || userData === undefined) {
     const newRewardData = createRewardData(atTime);
     try {
@@ -38,9 +36,9 @@ router.get("/:id/rewards", async (req, res) => {
         userId,
         newData: newRewardData,
       });
-      res.status(STATUSCODES['OK']).send(result);
+      return res.status(STATUSCODES['OK']).send(result);
     } catch (err) {
-      res.status(STATUSCODES['BAD_REQUEST']).send(err);
+      return res.status(STATUSCODES['BAD_REQUEST']).send(err);
     }
   } else if (userData && rewardsFromUser === null) {
     const newRewardData = createRewardData(atTime);
@@ -49,19 +47,18 @@ router.get("/:id/rewards", async (req, res) => {
         userId,
         newData: newRewardData,
       });
-      res.status(STATUSCODES['OK']).send(result);
+      return res.status(STATUSCODES['OK']).send(result);
     } catch (err) {
-      res.status(STATUSCODES['BAD_REQUEST']).send(err);
+      return res.status(STATUSCODES['BAD_REQUEST']).send(err);
     }
   } else {
-    res.status(STATUSCODES['OK']).send({ data: rewardsFromUser });
+    return res.status(STATUSCODES['OK']).send({ data: rewardsFromUser });
   }
-});
+}
 
-router.patch("/:id/rewards/:at/redeem", async (req, res) => {
+const patchRewardsRoute = async (req, res) => {
   const atTime = req.params["at"];
   const userId = req.params["id"];
-
   if (!isDate(atTime)) {
     return res.status(STATUSCODES['BAD_REQUEST']).send({
       error: { message: "Please use a proper date for the at query param" },
@@ -87,18 +84,25 @@ router.patch("/:id/rewards/:at/redeem", async (req, res) => {
     });
   }
   const reward = userData.data[rewardIdx];
-  const isReedemable = isRewardRedeemable(reward.expiresAt);
-  if (!isReedemable) {
+  const isRedeemable = isRewardRedeemable(reward.expiresAt);
+  if (!isRedeemable) {
     return res
       .status(STATUSCODES['BAD_REQUEST'])
       .send({ error: { message: "Your reward has already expired" } });
   }
   try {
     const result = await updateUserReward({ userId: userId, rewardIdx });
-    res.status(STATUSCODES['OK']).send(result);
+    return res.status(STATUSCODES['OK']).send(result);
   } catch (err) {
-    res.status(STATUSCODES['BAD_REQUEST']).send(err);
+    return res.status(STATUSCODES['BAD_REQUEST']).send(err);
   }
-});
+}
 
-module.exports = router;
+router.get("/:id/rewards", getRewardsRoute);
+router.patch("/:id/rewards/:at/redeem", patchRewardsRoute);
+
+module.exports = { 
+  userRouter: router,
+  getRewardsRoute,
+  patchRewardsRoute
+}

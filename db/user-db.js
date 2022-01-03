@@ -16,12 +16,7 @@ async function writeUserData(inputData, outputData) {
     await fs.writeFile(
       "./db/users.json",
       JSON.stringify(inputData),
-      "utf8",
-      (err) => {
-        if (err) {
-          return err;
-        }
-      }
+      "utf8"
     );
     return outputData;
   } catch (err) {
